@@ -14,8 +14,45 @@ export const settings = {
 }
 
 export const helpers = {
+  getMergedPropTypes (ctx) {
+    const concatenatedPropTypes = get(ctx, 'propTypes')
+    const mergedPropTypes = {}
+
+    if (typeOf(concatenatedPropTypes) === 'array') {
+      concatenatedPropTypes.forEach((propTypes) => {
+        Object.keys(propTypes).forEach((propName) => {
+          mergedPropTypes[propName] = propTypes[propName]
+        })
+      })
+    }
+
+    return mergedPropTypes
+  },
+
   handleError (ctx, message) {
     logger.warn(ctx, message, settings.throwErrors)
+  },
+
+  spreadPropertyObserver () {
+    const spread = get(this, settings.spreadProperty)
+
+    if (typeOf(spread) !== 'object') {
+      return
+    }
+
+    const propTypes = helpers.getMergedPropTypes(this)
+
+    Object.keys(spread)
+      .forEach((name) => {
+        const def = propTypes[name]
+
+        if (def === undefined) {
+          helpers.handleError(this, `propType for ${name} is unknown`)
+          return
+        }
+
+        helpers.validateProperty(this, name, def)
+      })
   },
 
   /* eslint-disable complexity */
@@ -49,28 +86,27 @@ export const helpers = {
       return
     }
 
-    const propTypesArray = [].concat(ctx.get('propTypes'))
-    propTypesArray.forEach((propType) => {
-      if (!propType) {
+    if (settings.spreadProperty) {
+      ctx.addObserver(settings.spreadProperty, ctx, helpers.spreadPropertyObserver)
+    }
+
+    const propTypes = helpers.getMergedPropTypes(ctx)
+
+    Object.keys(propTypes).forEach((name) => {
+      const def = propTypes[name]
+
+      if (def === undefined) {
+        helpers.handleError(ctx, `propType for ${name} is unknown`)
         return
       }
 
-      Object.keys(propType).forEach(name => {
-        const def = propType[name]
+      if (settings.validateOnUpdate) {
+        ctx.addObserver(name, ctx, function () {
+          helpers.validateProperty(this, name, def)
+        })
+      }
 
-        if (def === undefined) {
-          helpers.handleError(ctx, `propType for ${name} is unknown`)
-          return
-        }
-
-        if (settings.validateOnUpdate) {
-          ctx.addObserver(name, ctx, function () {
-            helpers.validateProperty(this, name, def)
-          })
-        }
-
-        helpers.validateProperty(ctx, name, def)
-      })
+      helpers.validateProperty(ctx, name, def)
     })
   }
 }

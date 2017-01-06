@@ -82,9 +82,11 @@ describe('Unit / validator / PropTypes.bool', function () {
             bar: true
           }
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false)
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
 
     describe('when initialized with number value via spread property', function () {
@@ -94,9 +96,11 @@ describe('Unit / validator / PropTypes.bool', function () {
             bar: 1
           }
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false, 'Expected property bar to be a boolean')
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
 
     describe('when initialized without value via spread property', function () {
@@ -104,9 +108,11 @@ describe('Unit / validator / PropTypes.bool', function () {
         ctx.instance = Foo.create({
           options: {}
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false, 'Missing required property bar')
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
   })
 
@@ -154,9 +160,11 @@ describe('Unit / validator / PropTypes.bool', function () {
             bar: true
           }
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false)
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
 
     describe('when initialized with number value via spread property', function () {
@@ -166,9 +174,11 @@ describe('Unit / validator / PropTypes.bool', function () {
             bar: 1
           }
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false, 'Expected property bar to be a boolean')
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
 
     describe('when initialized without value via spread property', function () {
@@ -176,9 +186,11 @@ describe('Unit / validator / PropTypes.bool', function () {
         ctx.instance = Foo.create({
           options: {}
         })
+        ctx.spread = true
       })
 
       itValidatesTheProperty(ctx, false)
+      itValidatesOnUpdate(ctx, 'bool', 'Expected property bar to be a boolean')
     })
   })
 })

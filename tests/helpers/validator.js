@@ -3,11 +3,27 @@
  */
 import {expect} from 'chai'
 import Ember from 'ember'
-const {Logger} = Ember
+const {Logger, RSVP, run} = Ember
 import {after, before, beforeEach, describe, it} from 'mocha'
 
 import {helpers, settings} from 'ember-prop-types/mixins/prop-types'
 import logger from 'ember-prop-types/utils/logger'
+
+function setProp (ctx, property, value) {
+  if (ctx.spread) {
+    ctx.instance.set('options', {
+      [property]: value
+    })
+
+    return new RSVP.Promise((resolve, reject) => {
+      run.later(() => {
+        resolve()
+      }, 50)
+    })
+  }
+
+  ctx.instance.set(property, value)
+}
 
 export function itValidatesOnUpdate (ctx, type, warningMessage) {
   describe('when throwErrors set to false', function () {
@@ -29,7 +45,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with array value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', [])
+        return setProp(ctx, 'bar', [])
       })
 
       if (type === 'array') {
@@ -41,7 +57,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with boolean value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', false)
+        return setProp(ctx, 'bar', false)
       })
 
       if (type === 'bool') {
@@ -53,7 +69,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with element value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', document.createElement('span'))
+        return setProp(ctx, 'bar', document.createElement('span'))
       })
 
       if (['element', 'object'].indexOf(type) !== -1) {
@@ -65,7 +81,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with function value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', () => {})
+        return setProp(ctx, 'bar', () => {})
       })
 
       if (type === 'func') {
@@ -77,7 +93,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with null value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', null)
+        return setProp(ctx, 'bar', null)
       })
 
       if (type === 'null') {
@@ -89,7 +105,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with number value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', 2)
+        return setProp(ctx, 'bar', 2)
       })
 
       if (type === 'number') {
@@ -101,7 +117,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with object value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', {})
+        return setProp(ctx, 'bar', {})
       })
 
       if (type === 'object') {
@@ -113,7 +129,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with string value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', 'spam')
+        return setProp(ctx, 'bar', 'spam')
       })
 
       if (type === 'string') {
@@ -125,7 +141,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with symbol value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', Symbol())
+        return setProp(ctx, 'bar', Symbol())
       })
 
       if (['object', 'symbol'].indexOf(type) !== -1) {
@@ -155,7 +171,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with array value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', [])
+        return setProp(ctx, 'bar', [])
       })
 
       if (type === 'array') {
@@ -167,7 +183,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with boolean value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', false)
+        return setProp(ctx, 'bar', false)
       })
 
       if (type === 'bool') {
@@ -179,7 +195,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with element value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', document.createElement('span'))
+        return setProp(ctx, 'bar', document.createElement('span'))
       })
 
       if (['element', 'object'].indexOf(type) !== -1) {
@@ -191,7 +207,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with function value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', () => {})
+        return setProp(ctx, 'bar', () => {})
       })
 
       if (type === 'func') {
@@ -203,7 +219,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with null value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', null)
+        return setProp(ctx, 'bar', null)
       })
 
       if (type === 'null') {
@@ -215,7 +231,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with number value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', 2)
+        return setProp(ctx, 'bar', 2)
       })
 
       if (type === 'number') {
@@ -227,7 +243,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with object value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', {})
+        return setProp(ctx, 'bar', {})
       })
 
       if (type === 'object') {
@@ -239,7 +255,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with string value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', 'spam')
+        return setProp(ctx, 'bar', 'spam')
       })
 
       if (type === 'string') {
@@ -251,7 +267,7 @@ export function itValidatesOnUpdate (ctx, type, warningMessage) {
 
     describe('updated with symbol value', function () {
       beforeEach(function () {
-        ctx.instance.set('bar', Symbol())
+        return setProp(ctx, 'bar', Symbol())
       })
 
       if (['object', 'symbol'].indexOf(type) !== -1) {
@@ -296,7 +312,10 @@ export function itValidatesTheProperty (ctx, throwErrors, ...warningMessages) {
   if (throwErrors) {
     if (warningMessages.length > 0) {
       it('should throw errors', function () {
-        expect(logger.throwError).to.have.callCount(warningMessages.length)
+        if (!ctx.spread) {
+          expect(logger.throwError).to.have.callCount(warningMessages.length)
+        }
+
         warningMessages.forEach((msg) => {
           expect(logger.throwError).to.have.been.calledWith(msg)
         })
@@ -313,7 +332,10 @@ export function itValidatesTheProperty (ctx, throwErrors, ...warningMessages) {
   } else {
     if (warningMessages.length > 0) {
       it('should log warning(s)', function () {
-        expect(Logger.warn).to.have.callCount(warningMessages.length)
+        if (!ctx.spread) {
+          expect(Logger.warn).to.have.callCount(warningMessages.length)
+        }
+
         warningMessages.forEach((msg) => {
           expect(Logger.warn).to.have.been.calledWith(`[${instance.toString()}]: ${msg}`)
         })
